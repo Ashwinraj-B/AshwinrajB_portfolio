@@ -1,8 +1,8 @@
 export const THEME_STORAGE_KEY = "portfolio-theme";
 
-export type ThemeId = "dark" | "light" | "dragon" | "professional";
+export type ThemeId = "dark" | "light" | "dragon";
 
-export const DEFAULT_THEME: ThemeId = "dark";
+export const DEFAULT_THEME: ThemeId = "light";
 
 export interface ThemeMeta {
   id: ThemeId;
@@ -14,22 +14,17 @@ export const THEMES: ThemeMeta[] = [
   {
     id: "dark",
     label: "Dark",
-    description: "The default low-light workspace look.",
+    description: "Low-light workspace look.",
   },
   {
     id: "light",
     label: "Light",
-    description: "Bright, high-contrast reading mode.",
+    description: "The default. Bright, understated, recruiter-friendly.",
   },
   {
     id: "dragon",
     label: "Dragon",
     description: "Animated ember glow & dragon silhouette.",
-  },
-  {
-    id: "professional",
-    label: "Professional",
-    description: "Understated recruiter-friendly look for AI/DS/ML.",
   },
 ];
 

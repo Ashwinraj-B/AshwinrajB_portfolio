@@ -1,4 +1,4 @@
-import { Check, Flame, Moon, Palette, Sun, Briefcase } from "lucide-react";
+import { Check, Flame, Moon, Palette, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,6 @@ const THEME_ICONS: Record<ThemeId, typeof Sun> = {
   dark: Moon,
   light: Sun,
   dragon: Flame,
-  professional: Briefcase,
 };
 
 export function ThemeSwitcher() {
