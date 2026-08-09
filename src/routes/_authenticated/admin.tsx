@@ -11,7 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UploadField } from "@/components/admin/UploadField";
 import { useIsAdmin, useSession } from "@/hooks/useAuth";
+import { CERTIFICATES_BUCKET } from "@/lib/storage";
 import {
   fetchCertifications,
   fetchExperiences,
@@ -82,7 +84,19 @@ function useTable(table: string, key: readonly string[], fetcher: () => Promise<
   return { query, save, create, remove };
 }
 
-type FieldDef = { key: string; label: string; type?: "text" | "textarea" | "number" | "switch" | "list" };
+type FieldDef = {
+  key: string;
+  label: string;
+  type?: "text" | "textarea" | "number" | "switch" | "list" | "file";
+  /** type: "file" only — storage bucket to upload into. */
+  fileBucket?: string;
+  /** type: "file" only — "document" allows PDF+image, "image" allows image only. */
+  fileKind?: "image" | "document";
+  /** type: "file" only — row key that receives the uploaded MIME type. */
+  typeKey?: string;
+  /** type: "file" only — row key that receives the uploaded byte size. */
+  sizeKey?: string;
+};
 
 function RowEditor({
   row,
@@ -103,7 +117,7 @@ function RowEditor({
         {fields.map((f) => (
           <div
             key={f.key}
-            className={`space-y-2 ${f.type === "textarea" ? "sm:col-span-2" : ""}`}
+            className={`space-y-2 ${f.type === "textarea" || f.type === "file" ? "sm:col-span-2" : ""}`}
           >
             <Label htmlFor={`${row.id}-${f.key}`}>{f.label}</Label>
             {f.type === "textarea" ? (
@@ -133,6 +147,21 @@ function RowEditor({
                       .split(",")
                       .map((v) => v.trim())
                       .filter(Boolean),
+                  })
+                }
+              />
+            ) : f.type === "file" ? (
+              <UploadField
+                bucket={f.fileBucket ?? ""}
+                folder={row.id}
+                kind={f.fileKind ?? "image"}
+                value={String(draft[f.key] ?? "")}
+                onChange={(path, meta) =>
+                  setDraft({
+                    ...draft,
+                    [f.key]: path,
+                    ...(f.typeKey ? { [f.typeKey]: meta?.type ?? "" } : {}),
+                    ...(f.sizeKey ? { [f.sizeKey]: meta?.size ?? 0 } : {}),
                   })
                 }
               />
@@ -381,8 +410,16 @@ function Admin() {
                   { key: "name", label: "Name" },
                   { key: "issuer", label: "Issuer" },
                   { key: "year", label: "Year" },
-                  { key: "url", label: "Credential URL" },
                   { key: "sort_order", label: "Order", type: "number" },
+                  {
+                    key: "file_path",
+                    label: "Certificate (PDF or image)",
+                    type: "file",
+                    fileBucket: CERTIFICATES_BUCKET,
+                    fileKind: "document",
+                    typeKey: "file_type",
+                    sizeKey: "file_size",
+                  },
                 ]}
               />
             </TabsContent>

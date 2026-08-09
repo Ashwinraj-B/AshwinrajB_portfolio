@@ -300,7 +300,6 @@ function Home() {
             <ul className="divide-y divide-border rounded-xl border border-border">
               {certs.data.map((c) => {
                 const fileUrl = c.file_path ? getPublicUrl(CERTIFICATES_BUCKET, c.file_path) : "";
-                const linkUrl = fileUrl || c.url;
                 const isPdf = c.file_type === "application/pdf";
                 return (
                   <li
@@ -323,9 +322,9 @@ function Home() {
                       ) : null}
                       <div>
                         <p className="font-medium">
-                          {linkUrl ? (
+                          {fileUrl ? (
                             <a
-                              href={linkUrl}
+                              href={fileUrl}
                               target="_blank"
                               rel="noreferrer"
                               className="hover:text-primary"

@@ -19,7 +19,6 @@ export type Database = {
           name: string;
           sort_order: number;
           updated_at: string;
-          url: string;
           year: string;
         };
         Insert: {
@@ -32,7 +31,6 @@ export type Database = {
           name: string;
           sort_order?: number;
           updated_at?: string;
-          url?: string;
           year?: string;
         };
         Update: {
@@ -45,7 +43,6 @@ export type Database = {
           name?: string;
           sort_order?: number;
           updated_at?: string;
-          url?: string;
           year?: string;
         };
         Relationships: [];
