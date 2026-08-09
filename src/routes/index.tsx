@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Github, Linkedin, Mail, MapPin, Sparkles } from "lucide-react";
+import { ArrowUpRight, FileText, Github, Linkedin, Mail, MapPin, Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   fetchSkills,
   portfolioKeys,
 } from "@/lib/portfolio";
+import { CERTIFICATES_BUCKET, MEDIA_BUCKET, getPublicUrl } from "@/lib/storage";
 import { useIsAdmin, useSession } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/")({
@@ -68,13 +69,22 @@ function Home() {
             {s?.full_name || "Portfolio"}
           </span>
           <div className="flex items-center gap-1 text-sm">
-            <a className="hidden px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground sm:block" href="#work">
+            <a
+              className="hidden px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground sm:block"
+              href="#work"
+            >
               Work
             </a>
-            <a className="hidden px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground sm:block" href="#projects">
+            <a
+              className="hidden px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground sm:block"
+              href="#projects"
+            >
               Projects
             </a>
-            <a className="hidden px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground sm:block" href="#skills">
+            <a
+              className="hidden px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground sm:block"
+              href="#skills"
+            >
               Skills
             </a>
             {isAdmin ? (
@@ -97,13 +107,24 @@ function Home() {
             </div>
           ) : (
             <>
-              <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
-                Open to AI / ML & Data Science roles
-              </p>
-              <h1 className="max-w-3xl text-4xl font-bold leading-[1.08] sm:text-6xl">
-                {s?.full_name}
-              </h1>
+              <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+                {s?.avatar_path ? (
+                  <img
+                    src={getPublicUrl(MEDIA_BUCKET, s.avatar_path)}
+                    alt={s.full_name}
+                    className="h-24 w-24 shrink-0 rounded-full object-cover ring-2 ring-border sm:h-28 sm:w-28"
+                  />
+                ) : null}
+                <div>
+                  <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    Open to AI / ML & Data Science roles
+                  </p>
+                  <h1 className="max-w-3xl text-4xl font-bold leading-[1.08] sm:text-6xl">
+                    {s?.full_name}
+                  </h1>
+                </div>
+              </div>
               <p className="mt-5 max-w-2xl text-lg text-foreground/90">{s?.headline}</p>
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{s?.tagline}</p>
 
@@ -152,9 +173,12 @@ function Home() {
           <section className="py-16" id="about">
             <SectionHeading index="01" title="About" />
             <div className="max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
-              {s.about.split("\n").filter(Boolean).map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
+              {s.about
+                .split("\n")
+                .filter(Boolean)
+                .map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
             </div>
           </section>
         ) : null}
@@ -187,47 +211,56 @@ function Home() {
             {projects.data?.map((p) => (
               <article
                 key={p.id}
-                className={`card-surface rounded-xl p-6 transition-shadow hover:glow-ring ${p.featured ? "sm:col-span-2" : ""
+                className={`card-surface overflow-hidden rounded-xl transition-shadow hover:glow-ring ${p.featured ? "sm:col-span-2" : ""
                   }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-lg font-semibold">{p.title}</h3>
-                  {p.featured ? <Badge variant="secondary">Featured</Badge> : null}
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.summary}</p>
-                {p.tech?.length ? (
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {p.tech.map((t) => (
-                      <li
-                        key={t}
-                        className="rounded-md border border-border bg-secondary px-2 py-0.5 font-mono text-xs text-muted-foreground"
-                      >
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
+                {p.image_path ? (
+                  <img
+                    src={getPublicUrl(MEDIA_BUCKET, p.image_path)}
+                    alt={p.title}
+                    className="aspect-video w-full object-cover"
+                  />
                 ) : null}
-                <div className="mt-4 flex gap-3 text-sm">
-                  {p.repo_url ? (
-                    <a
-                      className="inline-flex items-center gap-1 text-primary hover:underline"
-                      href={p.repo_url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Code <ArrowUpRight className="h-3.5 w-3.5" />
-                    </a>
+                <div className="p-6">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-lg font-semibold">{p.title}</h3>
+                    {p.featured ? <Badge variant="secondary">Featured</Badge> : null}
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.summary}</p>
+                  {p.tech?.length ? (
+                    <ul className="mt-4 flex flex-wrap gap-2">
+                      {p.tech.map((t) => (
+                        <li
+                          key={t}
+                          className="rounded-md border border-border bg-secondary px-2 py-0.5 font-mono text-xs text-muted-foreground"
+                        >
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
                   ) : null}
-                  {p.demo_url ? (
-                    <a
-                      className="inline-flex items-center gap-1 text-accent hover:underline"
-                      href={p.demo_url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Live demo <ArrowUpRight className="h-3.5 w-3.5" />
-                    </a>
-                  ) : null}
+                  <div className="mt-4 flex gap-3 text-sm">
+                    {p.repo_url ? (
+                      <a
+                        className="inline-flex items-center gap-1 text-primary hover:underline"
+                        href={p.repo_url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Code <ArrowUpRight className="h-3.5 w-3.5" />
+                      </a>
+                    ) : null}
+                    {p.demo_url ? (
+                      <a
+                        className="inline-flex items-center gap-1 text-accent hover:underline"
+                        href={p.demo_url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Live demo <ArrowUpRight className="h-3.5 w-3.5" />
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
               </article>
             ))}
@@ -265,23 +298,63 @@ function Home() {
           <section className="py-16" id="certifications">
             <SectionHeading index="05" title="Certifications" />
             <ul className="divide-y divide-border rounded-xl border border-border">
-              {certs.data.map((c) => (
-                <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 px-6 py-4">
-                  <div>
-                    <p className="font-medium">
-                      {c.url ? (
-                        <a href={c.url} target="_blank" rel="noreferrer" className="hover:text-primary">
-                          {c.name}
+              {certs.data.map((c) => {
+                const fileUrl = c.file_path ? getPublicUrl(CERTIFICATES_BUCKET, c.file_path) : "";
+                const linkUrl = fileUrl || c.url;
+                const isPdf = c.file_type === "application/pdf";
+                return (
+                  <li
+                    key={c.id}
+                    className="flex flex-wrap items-center justify-between gap-3 px-6 py-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      {fileUrl ? (
+                        isPdf ? (
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-secondary text-muted-foreground">
+                            <FileText className="h-5 w-5" />
+                          </span>
+                        ) : (
+                          <img
+                            src={fileUrl}
+                            alt=""
+                            className="h-10 w-10 shrink-0 rounded-md object-cover"
+                          />
+                        )
+                      ) : null}
+                      <div>
+                        <p className="font-medium">
+                          {linkUrl ? (
+                            <a
+                              href={linkUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:text-primary"
+                            >
+                              {c.name}
+                            </a>
+                          ) : (
+                            c.name
+                          )}
+                        </p>
+                        <p className="text-sm text-muted-foreground">{c.issuer}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      {fileUrl ? (
+                        <a
+                          href={fileUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                        >
+                          View certificate <ArrowUpRight className="h-3 w-3" />
                         </a>
-                      ) : (
-                        c.name
-                      )}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{c.issuer}</p>
-                  </div>
-                  <span className="font-mono text-xs text-muted-foreground">{c.year}</span>
-                </li>
-              ))}
+                      ) : null}
+                      <span className="font-mono text-xs text-muted-foreground">{c.year}</span>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </section>
         ) : null}

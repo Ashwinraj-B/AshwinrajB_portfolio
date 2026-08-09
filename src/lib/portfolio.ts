@@ -11,6 +11,7 @@ export type SiteSettings = {
   linkedin_url: string;
   github_url: string;
   resume_url: string;
+  avatar_path: string;
 };
 
 export type Experience = {
@@ -31,6 +32,7 @@ export type Project = {
   demo_url: string;
   featured: boolean;
   sort_order: number;
+  image_path: string;
 };
 
 export type Skill = {
@@ -47,6 +49,9 @@ export type Certification = {
   year: string;
   url: string;
   sort_order: number;
+  file_path: string;
+  file_type: string;
+  file_size: number;
 };
 
 export const portfolioKeys = {
