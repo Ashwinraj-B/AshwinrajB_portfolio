@@ -11,7 +11,8 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
-
+import { ThemeProvider } from "@/hooks/useTheme";
+import { themeInitScript } from "@/lib/theme";
 
 function NotFoundComponent() {
   return (
@@ -109,6 +110,8 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        {/* Sets data-theme on <html> before hydration to avoid a theme flash */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
         {children}
@@ -122,11 +125,12 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <Toaster position="top-center" />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <Toaster position="top-center" />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
-

@@ -15,6 +15,9 @@ import {
 } from "@/lib/portfolio";
 import { CERTIFICATES_BUCKET, MEDIA_BUCKET, getPublicUrl } from "@/lib/storage";
 import { useIsAdmin, useSession } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/useTheme";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { DragonBackground, DragonEmblem } from "@/components/DragonBackground";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -51,6 +54,7 @@ function SectionHeading({ index, title }: { index: string; title: string }) {
 function Home() {
   const { user } = useSession();
   const isAdmin = useIsAdmin(user?.id);
+  const { theme } = useTheme();
 
   const settings = useQuery({ queryKey: portfolioKeys.settings, queryFn: fetchSettings });
   const experiences = useQuery({ queryKey: portfolioKeys.experiences, queryFn: fetchExperiences });
@@ -65,8 +69,9 @@ function Home() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <span className="font-display text-sm font-semibold tracking-tight">
-            {s?.full_name || "Portfolio"}
+          <span className="flex items-center gap-2 font-display text-sm font-semibold tracking-tight">
+            <DragonEmblem />
+            {theme === "company" ? "Caged Dragon Studios" : s?.full_name || "Portfolio"}
           </span>
           <div className="flex items-center gap-1 text-sm">
             <a
@@ -92,80 +97,89 @@ function Home() {
                 <Link to="/admin">Admin</Link>
               </Button>
             ) : null}
+            <ThemeSwitcher />
           </div>
         </nav>
       </header>
 
       <main className="mx-auto max-w-5xl px-6">
         {/* Hero */}
-        <section className="hero-surface -mx-6 px-6 py-20 sm:py-28">
-          {settings.isLoading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-4 w-40" />
-              <Skeleton className="h-14 w-3/4" />
-              <Skeleton className="h-20 w-full" />
-            </div>
-          ) : (
-            <>
-              <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
-                {s?.avatar_path ? (
-                  <img
-                    src={getPublicUrl(MEDIA_BUCKET, s.avatar_path)}
-                    alt={s.full_name}
-                    className="h-24 w-24 shrink-0 rounded-full object-cover ring-2 ring-border sm:h-28 sm:w-28"
-                  />
-                ) : null}
-                <div>
-                  <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-                    <Sparkles className="h-3.5 w-3.5 text-primary" />
-                    Open to AI / ML & Data Science roles
-                  </p>
-                  <h1 className="max-w-3xl text-4xl font-bold leading-[1.08] sm:text-6xl">
-                    {s?.full_name}
-                  </h1>
+        <section className="hero-surface relative -mx-6 overflow-hidden px-6 py-20 sm:py-28">
+          <DragonBackground />
+          <div className="relative z-10">
+            {settings.isLoading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-14 w-3/4" />
+                <Skeleton className="h-20 w-full" />
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+                  {s?.avatar_path ? (
+                    <img
+                      src={getPublicUrl(MEDIA_BUCKET, s.avatar_path)}
+                      alt={s.full_name}
+                      className="h-24 w-24 shrink-0 rounded-full object-cover ring-2 ring-border sm:h-28 sm:w-28"
+                    />
+                  ) : null}
+                  <div>
+                    <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+                      <Sparkles className="h-3.5 w-3.5 text-primary" />
+                      Open to AI / ML & Data Science roles
+                    </p>
+                    <h1 className="max-w-3xl text-4xl font-bold leading-[1.08] sm:text-6xl">
+                      {s?.full_name}
+                    </h1>
+                  </div>
                 </div>
-              </div>
-              <p className="mt-5 max-w-2xl text-lg text-foreground/90">{s?.headline}</p>
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{s?.tagline}</p>
+                <p className="mt-5 max-w-2xl text-lg text-foreground/90">{s?.headline}</p>
+                <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{s?.tagline}</p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                {s?.email ? (
-                  <Button asChild>
-                    <a href={`mailto:${s.email}`}>
-                      <Mail className="h-4 w-4" /> Get in touch
-                    </a>
-                  </Button>
-                ) : null}
-                {s?.linkedin_url ? (
-                  <Button asChild variant="secondary">
-                    <a href={s.linkedin_url} target="_blank" rel="noreferrer">
-                      <Linkedin className="h-4 w-4" /> LinkedIn
-                    </a>
-                  </Button>
-                ) : null}
-                {s?.github_url ? (
-                  <Button asChild variant="secondary">
-                    <a href={s.github_url} target="_blank" rel="noreferrer">
-                      <Github className="h-4 w-4" /> GitHub
-                    </a>
-                  </Button>
-                ) : null}
-                {s?.resume_url ? (
-                  <Button asChild variant="ghost">
-                    <a href={s.resume_url} target="_blank" rel="noreferrer">
-                      Résumé <ArrowUpRight className="h-4 w-4" />
-                    </a>
-                  </Button>
-                ) : null}
-              </div>
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  {s?.email ? (
+                    <Button asChild>
+                      <a href={`mailto:${s.email}`}>
+                        <Mail className="h-4 w-4" /> Get in touch
+                      </a>
+                    </Button>
+                  ) : null}
+                  {s?.linkedin_url ? (
+                    <Button asChild variant="secondary">
+                      <a href={s.linkedin_url} target="_blank" rel="noreferrer">
+                        <Linkedin className="h-4 w-4" /> LinkedIn
+                      </a>
+                    </Button>
+                  ) : null}
+                  {s?.github_url ? (
+                    <Button asChild variant="secondary">
+                      <a href={s.github_url} target="_blank" rel="noreferrer">
+                        <Github className="h-4 w-4" /> GitHub
+                      </a>
+                    </Button>
+                  ) : null}
+                  {s?.resume_url ? (
+                    <Button asChild variant="ghost">
+                      <a href={s.resume_url} target="_blank" rel="noreferrer">
+                        Résumé <ArrowUpRight className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  ) : null}
+                </div>
 
-              {s?.location ? (
-                <p className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4" /> {s.location}
-                </p>
-              ) : null}
-            </>
-          )}
+                {s?.location ? (
+                  <p className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground">
+                    <MapPin className="h-4 w-4" /> {s.location}
+                  </p>
+                ) : null}
+                {theme === "company" ? (
+                  <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-accent">
+                    Building SkillBuild &amp; freelance AI/DS/ML products under Caged Dragon Studios
+                  </p>
+                ) : null}
+              </>
+            )}
+          </div>
         </section>
 
         {/* About */}
