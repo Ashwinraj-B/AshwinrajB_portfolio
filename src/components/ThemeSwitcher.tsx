@@ -1,4 +1,4 @@
-import { Check, Flame, Moon, Palette, ShieldHalf, Sun, Briefcase } from "lucide-react";
+import { Check, Flame, Moon, Palette, Sun, Briefcase } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,6 @@ const THEME_ICONS: Record<ThemeId, typeof Sun> = {
   light: Sun,
   dragon: Flame,
   professional: Briefcase,
-  company: ShieldHalf,
 };
 
 export function ThemeSwitcher() {
@@ -55,15 +54,8 @@ export function ThemeSwitcher() {
             >
               <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
               <span className="flex-1">
-                <span className="flex items-center gap-2 text-sm font-medium">
-                  {t.label}
-                  {t.tag ? (
-                    <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-normal text-secondary-foreground">
-                      {t.tag}
-                    </span>
-                  ) : null}
-                </span>
-                <span className="text-xs text-muted-foreground">{t.description}</span>
+                <span className="text-sm font-medium">{t.label}</span>
+                <span className="block text-xs text-muted-foreground">{t.description}</span>
               </span>
               {active ? <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> : null}
             </DropdownMenuItem>

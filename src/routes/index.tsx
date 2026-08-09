@@ -15,9 +15,8 @@ import {
 } from "@/lib/portfolio";
 import { CERTIFICATES_BUCKET, MEDIA_BUCKET, getPublicUrl } from "@/lib/storage";
 import { useIsAdmin, useSession } from "@/hooks/useAuth";
-import { useTheme } from "@/hooks/useTheme";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { DragonBackground, DragonEmblem } from "@/components/DragonBackground";
+import { DragonBackground } from "@/components/DragonBackground";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -54,7 +53,6 @@ function SectionHeading({ index, title }: { index: string; title: string }) {
 function Home() {
   const { user } = useSession();
   const isAdmin = useIsAdmin(user?.id);
-  const { theme } = useTheme();
 
   const settings = useQuery({ queryKey: portfolioKeys.settings, queryFn: fetchSettings });
   const experiences = useQuery({ queryKey: portfolioKeys.experiences, queryFn: fetchExperiences });
@@ -69,9 +67,8 @@ function Home() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <span className="flex items-center gap-2 font-display text-sm font-semibold tracking-tight">
-            <DragonEmblem />
-            {theme === "company" ? "Caged Dragon Studios" : s?.full_name || "Portfolio"}
+          <span className="font-display text-sm font-semibold tracking-tight">
+            {s?.full_name || "Portfolio"}
           </span>
           <div className="flex items-center gap-1 text-sm">
             <a
@@ -172,11 +169,6 @@ function Home() {
                     <MapPin className="h-4 w-4" /> {s.location}
                   </p>
                 ) : null}
-                {theme === "company" ? (
-                  <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-accent">
-                    Building SkillBuild &amp; freelance AI/DS/ML products under Caged Dragon Studios
-                  </p>
-                ) : null}
               </>
             )}
           </div>
@@ -225,8 +217,9 @@ function Home() {
             {projects.data?.map((p) => (
               <article
                 key={p.id}
-                className={`card-surface overflow-hidden rounded-xl transition-shadow hover:glow-ring ${p.featured ? "sm:col-span-2" : ""
-                  }`}
+                className={`card-surface overflow-hidden rounded-xl transition-shadow hover:glow-ring ${
+                  p.featured ? "sm:col-span-2" : ""
+                }`}
               >
                 {p.image_path ? (
                   <img

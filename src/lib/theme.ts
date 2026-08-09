@@ -1,6 +1,6 @@
 export const THEME_STORAGE_KEY = "portfolio-theme";
 
-export type ThemeId = "dark" | "light" | "dragon" | "professional" | "company";
+export type ThemeId = "dark" | "light" | "dragon" | "professional";
 
 export const DEFAULT_THEME: ThemeId = "dark";
 
@@ -8,8 +8,6 @@ export interface ThemeMeta {
   id: ThemeId;
   label: string;
   description: string;
-  /** short tag shown in the switcher, e.g. brand name for the company theme */
-  tag?: string;
 }
 
 export const THEMES: ThemeMeta[] = [
@@ -32,12 +30,6 @@ export const THEMES: ThemeMeta[] = [
     id: "professional",
     label: "Professional",
     description: "Understated recruiter-friendly look for AI/DS/ML.",
-  },
-  {
-    id: "company",
-    label: "Caged Dragon",
-    description: "Brand theme for Caged Dragon Studios.",
-    tag: "Caged Dragon Studios",
   },
 ];
 

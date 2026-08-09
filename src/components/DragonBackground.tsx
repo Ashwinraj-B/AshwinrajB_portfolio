@@ -59,31 +59,3 @@ export function DragonBackground() {
     </div>
   );
 }
-
-/**
- * Small breathing emblem for the "company" (Caged Dragon Studios) theme —
- * shown next to the wordmark in the header, calmer than the full dragon.
- */
-export function DragonEmblem() {
-  const { theme } = useTheme();
-  if (theme !== "company") return null;
-
-  return (
-    <svg
-      className="dragon-emblem"
-      viewBox="0 0 48 48"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <circle cx="24" cy="24" r="22" fill="none" stroke="var(--accent)" strokeWidth="1.5" />
-      <path
-        d="M12,30 C16,22 18,32 24,26 C28,22 26,16 32,14 C30,18 33,19 35,16"
-        fill="none"
-        stroke="var(--primary)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-      <circle cx="34" cy="15" r="2" fill="var(--accent)" />
-    </svg>
-  );
-}

@@ -257,55 +257,6 @@
   --shadow-glow: 0 0 0 1px oklch(0.42 0.13 255 / 0.15), 0 6px 20px -10px oklch(0.42 0.13 255 / 0.18);
 }
 
-/* ---------------------------------------------------------------------- */
-/* 5. Company — Caged Dragon Studios brand theme                          */
-/* ---------------------------------------------------------------------- */
-[data-theme="company"] {
-  --background: oklch(0.15 0.025 300);
-  --foreground: oklch(0.95 0.01 280);
-  --card: oklch(0.2 0.03 295);
-  --card-foreground: oklch(0.95 0.01 280);
-  --popover: oklch(0.2 0.03 295);
-  --popover-foreground: oklch(0.95 0.01 280);
-  --primary: oklch(0.62 0.19 300);
-  --primary-foreground: oklch(0.98 0.01 300);
-  --secondary: oklch(0.26 0.03 295);
-  --secondary-foreground: oklch(0.92 0.01 280);
-  --muted: oklch(0.24 0.025 295);
-  --muted-foreground: oklch(0.68 0.02 280);
-  --accent: oklch(0.8 0.14 85);
-  --accent-foreground: oklch(0.18 0.03 60);
-  --destructive: oklch(0.6 0.22 25);
-  --destructive-foreground: oklch(0.98 0.01 280);
-  --border: oklch(0.32 0.03 295);
-  --input: oklch(0.32 0.03 295);
-  --ring: oklch(0.62 0.19 300);
-  --chart-1: oklch(0.62 0.19 300);
-  --chart-2: oklch(0.8 0.14 85);
-  --chart-3: oklch(0.55 0.2 15);
-  --chart-4: oklch(0.6 0.15 260);
-  --chart-5: oklch(0.7 0.12 330);
-  --sidebar: oklch(0.13 0.025 300);
-  --sidebar-foreground: oklch(0.95 0.01 280);
-  --sidebar-primary: oklch(0.62 0.19 300);
-  --sidebar-primary-foreground: oklch(0.98 0.01 300);
-  --sidebar-accent: oklch(0.26 0.03 295);
-  --sidebar-accent-foreground: oklch(0.92 0.01 280);
-  --sidebar-border: oklch(0.32 0.03 295);
-  --sidebar-ring: oklch(0.62 0.19 300);
-
-  --dragon-ember-1: oklch(0.62 0.19 300);
-  --dragon-ember-2: oklch(0.8 0.14 85);
-
-  --gradient-hero: radial-gradient(120% 90% at 15% 0%,
-      oklch(0.62 0.19 300 / 0.22) 0%,
-      transparent 55%),
-    radial-gradient(90% 80% at 100% 10%, oklch(0.8 0.14 85 / 0.14) 0%, transparent 60%);
-  --gradient-line: linear-gradient(90deg, transparent, oklch(0.8 0.14 85 / 0.6), transparent);
-  --shadow-card: 0 1px 0 0 oklch(1 0 0 / 0.05) inset, 0 18px 40px -24px oklch(0 0 0 / 0.8);
-  --shadow-glow: 0 0 0 1px oklch(0.62 0.19 300 / 0.3), 0 12px 40px -12px oklch(0.62 0.19 300 / 0.4);
-}
-
 @theme inline {
   --font-display: var(--font-display);
   --font-sans: var(--font-body);
@@ -531,25 +482,6 @@
   }
 }
 
-/* Small brand emblem used in the header for the "company" theme */
-.dragon-emblem {
-  width: 22px;
-  height: 22px;
-  animation: dragon-emblem-breathe 4s ease-in-out infinite;
-}
-
-@keyframes dragon-emblem-breathe {
-
-  0%,
-  100% {
-    filter: drop-shadow(0 0 0 transparent);
-  }
-
-  50% {
-    filter: drop-shadow(0 0 6px var(--accent));
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
 
   .dragon-fx__glow,
@@ -557,8 +489,7 @@
   .dragon-fx__wing,
   .dragon-fx__eye,
   .dragon-fx__trail,
-  .dragon-fx__ember,
-  .dragon-emblem {
+  .dragon-fx__ember {
     animation: none !important;
   }
 }
